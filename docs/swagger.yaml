@@ -1,0 +1,118 @@
+basePath: /api/v1
+definitions:
+  models.Account:
+    properties:
+      balance:
+        type: integer
+      first_name:
+        type: string
+      id:
+        type: string
+      last_name:
+        type: string
+      status:
+        description: '"active" or "deleted"'
+        type: string
+    type: object
+  models.Response-any:
+    properties:
+      data: {}
+      message:
+        type: string
+      status_code:
+        type: integer
+    type: object
+  models.Response-models_Account:
+    properties:
+      data:
+        $ref: '#/definitions/models.Account'
+      message:
+        type: string
+      status_code:
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: An example of how to document Go API with Swagger (Swaggo).
+  title: Example Accounts API
+  version: "1.0"
+paths:
+  /account:
+    put:
+      description: Add a new account. Returns an error if the ID already exists.
+      parameters:
+      - description: Account object
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/models.Account'
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Response-any'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response-any'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/models.Response-any'
+      summary: Create a new account
+      tags:
+      - Accounts
+  /account/{id}:
+    get:
+      description: Get account details by ID
+      parameters:
+      - description: Account ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response-models_Account'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response-any'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response-any'
+      summary: Retrieve an account
+      tags:
+      - Accounts
+  /update-account:
+    post:
+      description: Update account fields except for ID
+      parameters:
+      - description: Account object
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/models.Account'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response-any'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response-any'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response-any'
+      summary: Update an account
+      tags:
+      - Accounts
+swagger: "2.0"
